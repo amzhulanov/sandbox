@@ -1,0 +1,57 @@
+syntax="proto3";
+
+option java_multiple_files=true;
+option java_package="grpc";
+
+message Parent{
+    string email=1;
+    string timeZone=2;
+    string name=3;
+    string password=4;
+}
+
+message ParentResponse{
+    string email=1;
+    string timeZone=2;
+    string name=3;
+}
+
+message ParentId{
+    int32 id=1;
+}
+
+message Email{
+    string email=1;
+}
+
+message Child{
+    string name=1;
+    string tariff=2;
+    string gender=3;
+    string birthday=4;
+    int32 parentId=5;
+}
+
+message APIResponse{
+    int32 id=1;
+}
+
+message ParentSuccess{
+    string result=1;
+}
+
+message ListChild{
+    repeated Child child=1;
+
+}
+
+
+service ParentService{
+    rpc save(Parent) returns (ParentId);
+    rpc findParentByEmail(Email) returns (ParentResponse);
+}
+
+service ChildService{
+    rpc save(Child) returns (Child);
+    rpc getAllChildsByParent(ParentId) returns (ListChild);
+}
