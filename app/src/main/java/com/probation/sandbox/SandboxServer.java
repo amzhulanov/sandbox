@@ -53,7 +53,8 @@ public class SandboxServer {
                 .keepAliveTime(KEEP_ALIVE_TIME, TimeUnit.SECONDS)
                 .keepAliveTimeout(KEEP_ALIVE_TIMEOUT, TimeUnit.SECONDS)
                 .permitKeepAliveTime(PERMIT_KEEP_ALIVE_TIME, TimeUnit.SECONDS)
-                .addService(ServerInterceptors.intercept(new SandboxServiceImpl(childService, parentService, convertEntityToGrpc, convertGrpcToEntity)))
+                .addService(ServerInterceptors.intercept(new SandboxParentServiceImpl(parentService, convertEntityToGrpc, convertGrpcToEntity)))
+                .addService(ServerInterceptors.intercept(new SandboxChildServiceImpl(childService, convertEntityToGrpc, convertGrpcToEntity)))
                 .build();
         start();
     }
