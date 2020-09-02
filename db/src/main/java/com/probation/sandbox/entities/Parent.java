@@ -1,13 +1,12 @@
 package com.probation.sandbox.entities;
 
-import javax.persistence.CascadeType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.probation.sandbox.entities.base.AbstractEntity;
 import lombok.*;
 
-import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
@@ -19,7 +18,6 @@ import java.util.TimeZone;
 public class Parent extends AbstractEntity {
 
     @NotNull
-    @Setter(AccessLevel.NONE)
     private String email;
 
     @NotNull
@@ -34,10 +32,29 @@ public class Parent extends AbstractEntity {
     @OneToMany(mappedBy = "parent", orphanRemoval = true, cascade = CascadeType.ALL)
     protected List<Child> childList = new ArrayList<>();
 
-    public Parent(String email,String name, String password,TimeZone tm) {
-        this.email=email;
-        this.name=name;
-        this.password=password;
-        this.timeZone=tm;
+    private AdminRole adminRole;
+
+    @Value("${default.role}")
+    private boolean adminRoleValue;
+
+    @PostLoad
+    void fillRoleCode() {
+        this.adminRole = AdminRole.getById(adminRoleValue);
     }
+
+    @PrePersist
+    @PreUpdate
+    void fillRoleCodeValue() {
+        if (adminRole != null) {
+            this.adminRoleValue = adminRole.isId();
+        }
+    }
+
+    public Parent(String email, String name, String password, TimeZone tm) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.timeZone = tm;
+    }
+
 }
